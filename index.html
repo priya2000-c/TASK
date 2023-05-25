@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Argument Evaluation</title>
+  <style>
+    .container {
+      margin: 20px;
+    }
+
+    .input-buttons {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .select-button {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .clear-button {
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="input-buttons">
+      <button id="my-arg">My Arg</button>
+      <div>
+        <button id="true-button">True</button>
+        <button id="false-button">False</button>
+      </div>
+    </div>
+    <div class="add-arg-container">
+      <button id="add-arg">+ Add Arg</button>
+    </div>
+    <div id="select-container">
+      <select id="select-button">
+        <option value="">Select Option</option>
+        <option value="constant">Constant</option>
+        <option value="argument">Argument</option>
+        <option value="and">And</option>
+        <option value="or">Or</option>
+      </select>
+      <button id="clear-button" class="clear-button">x</button>
+    </div>
+    <div class="result">Result: <span id="result"></span></div>
+  </div>
+
+  <script>
+    const selectButton = document.getElementById('select-button');
+    const clearButton = document.getElementById('clear-button');
+    const result = document.getElementById('result');
+    const myArgButton = document.getElementById('my-arg');
+    const trueButton = document.getElementById('true-button');
+    const falseButton = document.getElementById('false-button');
+    const addArgButton = document.getElementById('add-arg');
+
+    // Function to update the result based on the selected option
+    const updateResult = () => {
+      const selectedOption = selectButton.value;
+      result.textContent = selectedOption === 'true' ? 'True' : selectedOption === 'false' ? 'False' : 'Undefined';
+    };
+
+    // Function to handle the change event of the select button
+    const handleSelectChange = () => {
+      const selectedOption = selectButton.value;
+
+      // Clear the select options
+      selectButton.innerHTML = '';
+
+      if (selectedOption === 'constant') {
+        selectButton.innerHTML = '<option value="false">False</option>';
+        result.textContent = 'False';
+      } else if (selectedOption === 'argument') {
+        selectButton.innerHTML = `<option value="${myArgButton.textContent}">${myArgButton.textContent}</option>`;
+        result.textContent = '';
+      } else {
+        // Reset the select options
+        selectButton.innerHTML = `
+          <option value="">False</option>
+          <option value="true">True</option>
+        `;
+        result.textContent = 'False';
+      }
+    };
+
+    // Add event listeners
+    selectButton.addEventListener('change', updateResult);
+    clearButton.addEventListener('click', handleSelectChange);
+    myArgButton.addEventListener('click', () => {
+      selectButton.innerHTML = `<option value="${myArgButton.textContent}">${myArgButton.textContent}</option>`;
+      result.textContent = '';
+    });
+    trueButton.addEventListener('click', () => {
+      selectButton.innerHTML = '<option value="true">True</option>';
+      result.textContent = 'True';
+    });
+    falseButton.addEventListener('click', () => {
+      selectButton.innerHTML = '<option value="false">False</option>';
+      result.textContent = 'False';
+    });
+    addArgButton.addEventListener('click', () => {
+      const newArgValue = prompt("Enter argument text");
+      if (newArgValue) {
+        myArgButton.textContent = newArgValue;
+        selectButton.innerHTML = '';
+        result.textContent = 'False';
+        const argOption = document.createElement('option');
+        argOption.value = newArgValue;
+        argOption.textContent = newArgValue;
+        selectButton.appendChild(argOption);
+      }
+    });
+  </script>
+</body>
+</html>
